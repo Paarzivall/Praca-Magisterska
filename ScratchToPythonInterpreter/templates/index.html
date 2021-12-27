@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row justify-content-center mx-auto">
+        <div class="col-8">
+            <form action="/LoadScratchProject/" method="post" class="col-12 mx-auto input-group mt-1" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form }}
+                <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-3"/>
+            </form>
+        </div>
+    </div>
+    <hr>
+    <div class="row text-center">
+        <div class="col-6">Autor projektu: {{ autor }}</div>
+        <div class="col-6">Tytuł projektu: {{ tytul }}</div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-6" id="python_code">
+            {{ python_code_result }}
+        </div>
+        <div class="col-6" id="scratch_code">
+            {{ scratch_code_result }}
+        </div>
+    </div>
+    {{ result }}
+</div>
+
+{% endblock %}
