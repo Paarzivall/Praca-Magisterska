@@ -12,10 +12,10 @@ class LoadScratchProject(View):
             form = ProjectForm(request.POST, request.FILES)
             if form.is_valid():
                 file = Files(request.FILES.get('project'))
-                ConverterScratchToPython(file.get_json_file())
+                scratch_code = ConverterScratchToPython(file.get_json_file())
                 results = file.get_json_file()
         return render(request, "index.html", {'form': ProjectForm(), 'python_code_result': results,
-                                              'scratch_code_result': results})
+                                              'scratch_code_result': scratch_code.get_scratch_code()})
     """def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             form = ProjectForm(request.POST)

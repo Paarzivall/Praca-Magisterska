@@ -21,8 +21,10 @@
         <div class="col-6" id="python_code">
             {{ python_code_result }}
         </div>
-        <div class="col-6" id="scratch_code">
-            {{ scratch_code_result }}
+        <div class="col-6 text-center" id="scratch_code">
+            {% for element in scratch_code_result %}
+                <div style={{ element.style }} class={{ element.class }}>{{ element.text }}</div>
+            {% endfor %}
         </div>
     </div>
     {{ result }}
