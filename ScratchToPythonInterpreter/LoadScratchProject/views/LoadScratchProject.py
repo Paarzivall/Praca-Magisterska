@@ -3,6 +3,7 @@ from django.views.generic import View
 from scratchclient import ScratchSession, Project
 from LoadScratchProject.forms import ProjectForm
 from LoadScratchProject.views.ConverterScratchToPython.ConverterScratchToPython import ConverterScratchToPython
+from LoadScratchProject.views.ConverterScratchToPython.PriorityListOfElements import PriorityListOfElements
 from LoadScratchProject.views.ConverterScratchToPython.Files import Files
 
 
@@ -12,10 +13,11 @@ class LoadScratchProject(View):
             form = ProjectForm(request.POST, request.FILES)
             if form.is_valid():
                 file = Files(request.FILES.get('project'))
-                scratch_code = ConverterScratchToPython(file.get_json_file())
+                priority_list = PriorityListOfElements(file.get_json_file())
+                scratch_code = ConverterScratchToPython(priority_list.get_priority_list()).get_scratch_code()
                 results = file.get_json_file()
         return render(request, "index.html", {'form': ProjectForm(), 'python_code_result': results,
-                                              'scratch_code_result': scratch_code.get_scratch_code()})
+                                              'scratch_code_result': scratch_code})
     """def post(self, request, *args, **kwargs):
         if request.method == 'POST':
             form = ProjectForm(request.POST)

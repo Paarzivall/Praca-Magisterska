@@ -3,143 +3,104 @@ from LoadScratchProject.views.ConverterScratchToPython.BlocksFinders.VariablesFi
 global val_of_blocks
 val_of_blocks = {
         'event_whenflagclicked': {
-            'color': 'pink',
+            'color': '#ffbf00',
             'text': 'Kiedy kliknięto',
         },
         'data_setvariableto': {
-            'color': 'orange',
-            'text': 'ustaw [var] na [val]',
+            'color': '#ff8c1a',
+            'text': 'ustaw',
         },
         'control_repeat_until': {
-            'color': 'yellow',
+            'color': '#ffab19',
             'text': 'powtarzaj aż',
         },
         'motion_turnright': {
-            'color': 'blue',
-            'text': 'obróć w prawo o ',
+            'color': '#4c97ff',
+            'text': 'obróć w prawo o',
         },
         'operator_gt': {
-            'color': 'green',
+            'color': '#59c059',
             'text': '[var] > [val]',
         },
         'operator_lt': {
-            'color': 'green',
+            'color': '#59c059',
             'text': '[var] > [val]',
         },
         'data_changevariableby': {
-            'color': 'orange',
-            'text': 'zmień [var] o [val]',
+            'color': '#ff8c1a',
+            'text': 'zmień',
         },
         'data_showvariable': {
-            'color': 'orange',
+            'color': '#ff8c1a',
             'text': 'pokaż zmienną ',
         },
         'control_if': {
-            'color': 'orange',
-            'text': 'jeżeli coś to coś ',
+            'color': '#ffab19',
+            'text': 'jeżeli',
         },
     }
 
 
 class ConverterScratchToPython(object):
+    type_of_logical_field = ['operator_gt', 'operator_lt']
+    type_of_variable_field = ['data_setvariableto', 'data_changevariableby']
+    type_of_loop_field = ['control_repeat_until', 'control_if']
+    type_of_motion_field = ['motion_turnright']
+    type_of_event_field = ['event_whenflagclicked']
 
-    def __init__(self, json_file):
-        self.json_file = json_file
-        self.list_of_variables = VariablesFinder(self.json_file, 'data_setvariableto').get_list_of_elements()
-        #print(self.list_of_variables)
-        self.list_of_elements = list()
-        self.priority_list = list()
-        self.generate_list_of_elements()
-        self.generate_priority_list()
-        self.list_of_logical = list()
-        self.generate_list_of_logical()
+    def __init__(self, priority_list):
+        self.priority_list = priority_list
         self.scratch_code = list()
         self.draw_scratch_code()
 
     def draw_scratch_code(self):
-        for p_e in self.priority_list:
-            for e in self.list_of_elements:
-                if p_e == e['id']:
-                    self.scratch_code.append({'id': e['id'], 'type_of_block': e['val']['opcode'], 'style': 'background-color:' + val_of_blocks[e['val']['opcode']]['color'] + ';height:100px', 'class': 'col-6 mt-1', 'text': val_of_blocks[e['val']['opcode']]['text']})
-        self.add_logical()
-        self.add_variables()
-        self.add_turning()
-        self.add_change_variable_field()
+        for e in self.priority_list:
+            if e['val']['opcode'] in self.type_of_logical_field:
+                self.scratch_code[len(self.scratch_code) - 1]['child'] = {'style': 'background-color:' + val_of_blocks[e['val']['opcode']]['color']}
+                self.scratch_code[len(self.scratch_code) - 1]['text'] += self.generate_text_to_block(e, val_of_blocks[e['val']['opcode']]['text'])
+            else:
+                text_to_block = self.generate_text_to_block(e, val_of_blocks[e['val']['opcode']]['text'])
+                optional_style = self.check_if_block_is_in_loop(e['id'])
+                self.scratch_code.append({'id': e['id'], 'type_of_block': e['val']['opcode'], 'style': 'background-color:' + val_of_blocks[e['val']['opcode']]['color'] + ';height:100px', 'class': 'col-6 mt-1 rounded-3 ' + optional_style, 'text': text_to_block})
 
-    def add_change_variable_field(self):
-        for e in self.scratch_code:
-            if e['type_of_block'] == 'data_changevariableby':
-                for element in self.list_of_elements:
-                    if e['id'] == element['id']:
-                        e['text'] = 'zmień ' + element['val']['fields']['VARIABLE'][0] + ' o ' + element['val']['inputs']['VALUE'][1][1]
+    def check_if_block_is_in_loop(self, e_id):
+        for e in self.priority_list:
+            if e['val']['opcode'] in self.type_of_loop_field:
+                if e['val']['inputs']['SUBSTACK'][1] == e_id:
+                    return 'ml-5'
+                el = self.find_element(e_id)
+                if el['prev_element'] == e['val']['inputs']['SUBSTACK'][1]:
+                    return 'ml-5'
+        return ''
 
-    def add_turning(self):
-        for e in self.scratch_code:
-            if e['type_of_block'] == 'motion_turnright':
-                for element in self.list_of_elements:
-                    if e['id'] == element['id']:
-                        e['text'] += element['val']['inputs']['DEGREES'][1][1] + ' stopni'
+    def find_element(self, value):
+        for e in self.priority_list:
+            if e['id'] == value:
+                return e
 
-    def add_variables(self):
-        for e in self.scratch_code:
-            for var in self.list_of_variables:
-                if e['id'] == var['id_of_variable']:
-                    e['text'] = 'ustaw ' + var['name_of_variable'] + " na " + var['value_of_variable']
+    def generate_text_to_block(self, e, default_text):
+        if e['val']['opcode'] in self.type_of_logical_field:
+            return self.add_logical_text(e)
+        elif e['val']['opcode'] in self.type_of_variable_field:
+            return self.add_variable_text(e, default_text)
+        elif e['val']['opcode'] in self.type_of_motion_field:
+            return self.add_motion_text(e, default_text)
+        return default_text
 
-    def add_logical(self):
-        tmp = ['control_repeat_until', 'control_if']
-        for e in self.scratch_code:
-            if e['type_of_block'] in tmp: #TODO sprawdzić resztę pętli jak coś dodać listę i zmienić '==' na 'in'
-                for logical in self.list_of_logical:
-                    if logical['parent'] == e['id']:
-                        e['text'] += " " + logical['var'] + " " + self.get_type_of_logical(logical['type_of_block']) \
-                                     + " " + logical['val_to']
+    def add_motion_text(self, e, default_text):
+        return default_text + " " + e['val']['inputs']['DEGREES'][1][1] + " stopni"
+
+    def add_variable_text(self, e, default_text):
+        return default_text + " " + e['val']['fields']['VARIABLE'][0] + " na " + e['val']['inputs']['VALUE'][1][1]
+
+    def add_logical_text(self,e):
+        return " " + e['val']['inputs']['OPERAND1'][1][1] + " " + self.get_type_of_logical(e['val']['opcode']) + " " + e['val']['inputs']['OPERAND2'][1][1]
 
     def get_type_of_logical(self, type_of_block):
         if type_of_block == 'operator_gt':
             return '>'
         elif type_of_block == 'operator_lt':
             return '<'
-        elif type_of_block == 'control_if':
-            return 'if'
-
-    def generate_list_of_logical(self):
-        list_of_operators = ['operator_gt', 'operator_lt']
-        for e in self.list_of_elements:
-            if e['id'] not in self.priority_list and e['val']['opcode'] in list_of_operators:
-                self.list_of_logical.append({'id': e['id'], 'type_of_block': e['val']['opcode'],
-                                             'parent': e['val']['parent'], 'var': e['val']['inputs']['OPERAND1'][1][1],
-                                             'val_to': e['val']['inputs']['OPERAND2'][1][1]}) #TODO dodać jakieś wartości potrzebne
-            elif e['id'] not in self.priority_list:
-                print(e['id'], e['val']['opcode'])
-                self.list_of_logical.append({'id': e['id'], 'type_of_block': e['val']['opcode'],
-                                             'parent': e['val']['parent'], 'var': 'asd',
-                                             'val_to': 'fgh'})
 
     def get_scratch_code(self):
         return self.scratch_code
-
-    def generate_list_of_elements(self):
-        for target in self.json_file["targets"]:
-            for element in target['blocks']:
-                self.list_of_elements.append({'id': element, 'prev_element': target['blocks'][element]['parent'], 'next_element': target['blocks'][element]['next'], 'val': target['blocks'][element]})
-        # print(self.list_of_elements)
-
-    def generate_priority_list(self):
-        elements = self.list_of_elements
-        # print(elements)
-        self.priority_list.append(self.find_first_element(elements))
-        while len(elements) - 1 > len(self.priority_list):
-            id = self.find_element(elements, self.priority_list[len(self.priority_list) - 1])
-            self.priority_list.append(id)
-        # print(self.priority_list)
-
-    def find_element(self, list_of_element, parent_element):
-        for element in list_of_element:
-            if element['val']['parent'] == parent_element:
-                return element['id']
-
-    def find_first_element(self, list_of_elements):
-        for element in list_of_elements:
-            if element['val']['parent'] is None:
-                return element['id']
