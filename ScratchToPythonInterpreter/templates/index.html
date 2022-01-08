@@ -19,7 +19,9 @@
     <hr>
     <div class="row">
         <div class="col-6" id="python_code">
-            {{ python_code_result }}
+            {% for element in python_code_result %}
+                <span class={{ element.class }}>{{ element.code }}</span><br>
+            {% endfor %}
         </div>
         <div class="col-6 text-center" id="scratch_code">
             {% for element in scratch_code_result %}
@@ -33,7 +35,6 @@
                     {% endif %}
                 </div>
             {% endfor %}
-            {{ scratch_code_result }}
         </div>
     </div>
     {{ result }}
