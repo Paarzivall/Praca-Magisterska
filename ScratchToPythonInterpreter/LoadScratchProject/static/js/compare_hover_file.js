@@ -4,6 +4,7 @@
             var id_of_python_block = 'python_' + id_of_block.toString();
             var elements = document.getElementsByClassName(id_of_python_block);
             change_style(elements, 'bold', '1.5rem');
+            
         });
 
          $('.block_of_scratch_code').mouseout(function(event){
