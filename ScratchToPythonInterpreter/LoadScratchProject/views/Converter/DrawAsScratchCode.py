@@ -16,7 +16,13 @@ class DrawAsScratchCode(object):
             else:
                 text_to_block = self.generate_text_to_block(e, val_of_blocks[e['val']['opcode']]['text'])
                 optional_style = self.check_if_block_is_in_loop(e['id'])
-                self.scratch_code.append({'id': e['id'], 'type_of_block': e['val']['opcode'], 'style': 'background-color:' + val_of_blocks[e['val']['opcode']]['color'] + ';height:100px', 'class': 'col-6 mt-1 rounded-3 block_of_scratch_code' + optional_style, 'text': text_to_block})
+                self.scratch_code.append({'id': self.generate_id(e['id']), 'type_of_block': e['val']['opcode'], 'style': 'background-color:' + val_of_blocks[e['val']['opcode']]['color'], 'class': 'block_of_scratch_code ' + optional_style, 'text': text_to_block})
+
+    def generate_id(self, e_id):
+        output_id = ''
+        for e in e_id:
+            output_id += str(ord(e))
+        return output_id
 
     def check_if_block_is_in_loop(self, e_id):
         for e in self.priority_list:

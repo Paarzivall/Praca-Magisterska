@@ -7,8 +7,10 @@ class DrawAsPythonCode(object):
         self.priority_list = priority_list
         self.python_code = list()
         self.draw_python_code()
+        # print(self.python_code)
 
     def draw_python_code(self):
+
         added_text = list()
         for e in self.priority_list:
             if e['val']['opcode'] in TypeOfBlocks.type_of_logical_field:
@@ -16,7 +18,7 @@ class DrawAsPythonCode(object):
             else:
                 code_to_block = self.generate_text_to_block(e, val_of_blocks[e['val']['opcode']]['code'])
                 optional_class = self.check_if_block_is_in_loop(e['id'])
-                self.python_code.append({'id': e['id'], 'type_of_block': e['val']['opcode'], 'class': optional_class, 'code': code_to_block})
+                self.python_code.append({'id': self.generate_id(e['id']), 'type_of_block': e['val']['opcode'], 'class': 'block_of_python_code ' + optional_class, 'code': code_to_block})
             if val_of_blocks[e['val']['opcode']]['additional_code'] is not None and val_of_blocks[e['val']['opcode']]['additional_code'] not in added_text:
                 added_text.append(val_of_blocks[e['val']['opcode']]['additional_code'])
                 tmp = list(val_of_blocks[e['val']['opcode']]['additional_code'])
@@ -25,15 +27,21 @@ class DrawAsPythonCode(object):
                         optional_class = 'ml-1'
                     else:
                         optional_class = 'ml-4'
-                    text_to_add = {'id': None, 'type_of_block': None,
-                                   'code': text, 'class': optional_class}
+                    text_to_add = {'id': self.generate_id(e['id']) + "", 'type_of_block': None,
+                                   'code': text, 'class': 'block_of_python_code ' + optional_class}
                     self.python_code.insert(0, text_to_add)
             self.remove_necessary_class()
+
+    def generate_id(self, e_id):
+        output_id = ''
+        for e in e_id:
+            output_id += str(ord(e))
+        return output_id
 
     def remove_necessary_class(self):
         for e in self.python_code:
             if e['type_of_block'] in TypeOfBlocks.type_of_event_field:
-                e['class'] = 'ml-1'
+                e['class'] = 'ml-1 block_of_python_code'
 
     def add_optional_class(self, e_id):
         e = self.find_element(e_id)

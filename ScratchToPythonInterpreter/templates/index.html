@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block sub_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
 
+{% endblock %}
 {% block content %}
 <div class="container-fluid">
     <div class="row justify-content-center mx-auto">
@@ -7,27 +11,29 @@
             <form action="/LoadScratchProject/" method="post" class="col-12 mx-auto input-group mt-1" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ form }}
-                <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-3"/>
+                <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-4"/>
             </form>
         </div>
     </div>
     <hr>
-    <div class="row text-center">
-        <div class="col-6">Autor projektu: {{ autor }}</div>
-        <div class="col-6">Tytuł projektu: {{ tytul }}</div>
+    <div class="row">
+        <div class="col-12 mx-auto text-center">
+            <a class="col-4 btn btn-outline-primary" href="#animation">Pokaż działanie kodu</a>
+            <button class="col-4 btn btn-outline-primary">Pobierz pliki źródłowe</button>
+        </div>
     </div>
     <hr>
     <div class="row">
         <div class="col-6" id="python_code">
             {% for element in python_code_result %}
-                <span class={{ element.class }}>{{ element.code }}</span><br>
+                <span id="python_{{ element.id }}" class="{{ element.class }} python_{{ element.id }}">{{ element.code }}</span><br>
             {% endfor %}
         </div>
         <div class="col-6 text-center" id="scratch_code">
             {% for element in scratch_code_result %}
-                <div style={{ element.style }} class="{{ element.class }}">
+                <div id="scratch_{{ element.id }}" style="height:100px; {{ element.style }}" class="col-6 mt-1 rounded-3 {{ element.class }} scratch_{{ element.id }}">
                     {% if element.child %}
-                        <div class="col-10 mx-auto" style={{ element.child.style }}>
+                        <div class="col-10 mx-auto child p-2" style={{ element.child.style }}>
                             {{ element.text }}
                         </div>
                     {% else %}
@@ -37,7 +43,26 @@
             {% endfor %}
         </div>
     </div>
-    {{ result }}
+    <hr>
+    <div class="row justify-content-center mx-auto mt-5" id="animation">
+        <div class="col-8 mx-auto text-center">
+            <button class="col-4 btn btn-outline-primary" id="start_animation">Uruchom animację</button>
+
+
+        </div>
+
+    </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/compare_hover_file.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+     $(document).ready(function(){
+            $('#start_animation').click(function(event){
+                alert('click');
+            });
+     });
+</script>
 {% endblock %}
