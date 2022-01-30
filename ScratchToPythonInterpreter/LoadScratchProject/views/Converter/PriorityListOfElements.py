@@ -1,28 +1,17 @@
-class PriorityListOfElements(object):
-    type_of_logical_field = ['operator_gt', 'operator_lt']
-    type_of_variable_field = ['data_setvariableto', 'data_changevariableby']
-    type_of_loop_field = ['control_repeat_until', 'control_if']
-    type_of_motion_field = ['motion_turnright']
-    type_of_event_field = ['event_whenflagclicked']
+import LoadScratchProject.views.Converter.BlocksOptions.TypeOfBlocks as block
 
+
+class PriorityListOfElements(object):
     def __init__(self, json_file):
         self.json_file = json_file
-        self.list_of_elements = list() # lista ze wszystkimi elementami "bloczkami"
+        self.list_of_elements = list()  # lista ze wszystkimi elementami "bloczkami"
         self.generate_list_of_elements()
-        # listy pomocnicze do generowania priority listy
-        self.list_of_logical = list()
-        self.list_of_variable = list()
-        self.list_of_loop = list()
-        self.list_of_motion = list()
-        self.list_of_event = list()
-        self.list_of_other = list()
-        self.manage_element_to_correct_type()
-        self.count_of_elements = self.calculate_count_of_all_elements()
         self.priority_list = self.generate_priority_list()
+        # self.print_priority_list()
 
-    def calculate_count_of_all_elements(self):
-        return len(self.list_of_logical) + len(self.list_of_variable) + len(self.list_of_loop) + \
-               len(self.list_of_motion) + len(self.list_of_event) + len(self.list_of_other)
+    def print_priority_list(self):
+        for e in self.priority_list:
+            print(e)
 
     def generate_list_of_elements(self):
         for target in self.json_file["targets"]:
@@ -31,69 +20,88 @@ class PriorityListOfElements(object):
                                               'next_element': target['blocks'][element]['next'],
                                               'val': target['blocks'][element]})
 
-    def manage_element_to_correct_type(self):
-        for e in self.list_of_elements:
-            self.set_to_correct_type(e)
-
-    def set_to_correct_type(self, e):
-        if e['val']['opcode'] in self.type_of_logical_field:
-            self.list_of_logical.append(e)
-        elif e['val']['opcode'] in self.type_of_variable_field:
-            self.list_of_variable.append(e)
-        elif e['val']['opcode'] in self.type_of_loop_field:
-            self.list_of_loop.append(e)
-        elif e['val']['opcode'] in self.type_of_motion_field:
-            self.list_of_motion.append(e)
-        elif e['val']['opcode'] in self.type_of_event_field:
-            self.list_of_event.append(e)
-        else:
-            self.list_of_other.append(e)
-
-    def append_to_priority_list(self, value):
-        for e in self.list_of_elements:
-            if e['id'] == value:
-                return e
-
-    def find_first_element(self, ):
+    def generate_priority_list(self):
         priority_list = list()
         for e in self.list_of_elements:
-            if e['prev_element'] is None:
-                priority_list.append(e)
-                self.list_of_elements.remove(e)
-        return priority_list
-
-    def generate_priority_list(self):
-        priority_list = self.find_first_element()
-        while len(priority_list) != self.count_of_elements:
-            e = priority_list[len(priority_list) - 1]
-            if e in self.list_of_loop:
-                if e['val']['inputs']['CONDITION'] is not None:
-                    new_e = self.append_to_priority_list(e['val']['inputs']['CONDITION'][1])
-                    self.list_of_elements.remove(new_e)
-                    priority_list.append(new_e)
-                if e['val']['inputs']['SUBSTACK'] is not None:
-                    new_e = self.append_to_priority_list(e['val']['inputs']['SUBSTACK'][1])
-                    self.list_of_elements.remove(new_e)
-                    priority_list.append(new_e)
+            if e['prev_element'] in priority_list:
+                priority_list.insert(priority_list.index(e['prev_element']) + 1, e['id'])
+            elif e['prev_element'] is None:
+                priority_list.insert(0, e['id'])
             else:
-                if e['next_element'] is not None:
-                    element = self.append_to_priority_list(e['next_element'])
-                    self.list_of_elements.remove(element)
-                    priority_list.append(element)
+                priority_list.insert(len(priority_list), e['id'])
+        return self.add_options_to_block(priority_list)
+
+    def find_next_element(self, e_id):
+        for e in self.list_of_elements:
+            if e['id'] == e_id:
+                return e['next_element']
+
+    def find_prev_element(self, e_id):
+        for e in self.list_of_elements:
+            if e['id'] == e_id:
+                return e['prev_element']
+
+    def add_options_to_block(self, priority_list):
+        output_code = list()
+        for e in priority_list:
+            element_name = self.find_element_in_list_of_elements(e)
+            type_of_block, additional_options = self.find_conditions(e)
+            next_element = self.find_next_element(e)
+            prev_element = self.find_prev_element(e)
+            output_code.append(
+                {'id': e, 'element_name': element_name, 'type_of_block': type_of_block, 'next_element': next_element,
+                 'prev_element': prev_element,'additional_options': additional_options})
+        return output_code
+
+    def get_loop_options(self, element):
+        return 'loop_block', {'substack': element['SUBSTACK'][1], 'condition': [element['CONDITION'][1]]}
+
+    def get_math_operation_options(self, element):
+        return 'math_operation', {'variable_name': element['NUM1'][1][1], 'variable_value': element['NUM2'][1][1]}
+
+    def get_logical_options(self, element):
+        if len(element) == 1:
+            return 'not_block', {'block_right': element['OPERAND'][1]}
+        else:
+            if isinstance(element['OPERAND1'][1], list) and isinstance(element['OPERAND2'][1], list):
+                return 'logical_block', {'variable_name': element['OPERAND1'][1][1], 'variable_value': element['OPERAND2'][1][1]}
+            elif isinstance(element['OPERAND1'][1], str):
+                return 'logical_block', {'block_name': element['OPERAND1'][1], 'value': element['OPERAND2'][1][1]}
+            return 'and_or_block', {'block_left': element['OPERAND1'][1], 'block_right': element['OPERAND2'][1]}
+
+    def get_variable_field(self, element):
+        return 'variable_block', {'name': element['fields']['VARIABLE'][0],
+                                  'value': element['inputs']['VALUE'][1][1]}
+
+    def get_motion_field(self, element):
+        return 'motion_block', {'degrees': element['DEGREES'][1][1]}
+
+    def find_conditions(self, e_id):
+        for e in self.list_of_elements:
+            if e['id'] == e_id:
+                if len(e['val']['inputs']) > 0:
+                    if e['val']['opcode'] in block.type_of_logical_field:
+                        return self.get_logical_options(e['val']['inputs'])
+                    elif e['val']['opcode'] in block.type_of_math_operation_field:
+                        return self.get_math_operation_options(e['val']['inputs'])
+                    elif e['val']['opcode'] in block.type_of_variable_field:
+                        return self.get_variable_field(e['val'])
+                    elif e['val']['opcode'] in block.type_of_loop_field:
+                        return self.get_loop_options(e['val']['inputs'])
+                    elif e['val']['opcode'] in block.type_of_motion_field:
+                        return self.get_motion_field(e['val']['inputs'])
+                    else:
+                        return 'other_block', None
                 else:
-                    if len(self.list_of_elements) > 0 and e['next_element'] is None:
-                        for el in self.list_of_elements:
-                            if el in self.list_of_loop:
-                                priority_list.append(el)
-                                if el['val']['inputs']['CONDITION'] is None:
-                                    new_e = self.append_to_priority_list(el['val']['inputs']['CONDITION'][1])
-                                    self.list_of_elements.remove(new_e)
-                                    priority_list.append(new_e)
-                                if el['val']['inputs']['SUBSTACK'] is None:
-                                    new_e = self.append_to_priority_list(el['val']['inputs']['SUBSTACK'][1])
-                                    self.list_of_elements.remove(new_e)
-                                    priority_list.append(new_e)
-        return priority_list
+                    if e['val']['opcode'] in block.type_of_event_field:
+                        return 'event_block', None
+        return 'other_block', None
+
+    def find_element_in_list_of_elements(self, e_id):
+        for e in self.list_of_elements:
+            if e['id'] == e_id:
+                return e['val']['opcode']
+        return None
 
     def get_priority_list(self):
         return self.priority_list

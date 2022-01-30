@@ -88,6 +88,9 @@ class DrawAsPythonCode(object):
             return '>'
         elif type_of_block == 'operator_lt':
             return '<'
+        elif type_of_block == 'operator_equals':
+            return '=='
+        return 'Nieznany'
 
     def get_python_code(self):
         return self.python_code
