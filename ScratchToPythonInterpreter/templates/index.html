@@ -31,22 +31,9 @@
         </div>
         <div class="col-6 text-center" id="scratch_code">
             {% for element in scratch_code_result %}
-                <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.style }}" class="col-6 mt-1 rounded-3 scratch_{{ element.id }}">
-                    {% if element.child %}
-                        <div class="col-10 mx-auto child p-2" style={{ element.child.style }}>
-                            {{ element.text }} <span style="background-color:{{ element.child.style }}">&nbsp;&nbsp;{{ element.child.text }}&nbsp;&nbsp;</span>
-                        </div>
-                    {% else %}
-                        {{ element.text }}
-                    {% endif %}
+                <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.background }}" class="col-6 mt-1 rounded-3 scratch_{{ element.id }} {{ element.class }}">
+                    {{ element.text }}
                 </div>
-                {% if element.substacks %}
-                    {% for substack in element.substacks %}
-                        <div id="scratch_" style="height:100px; background-color:{{ substack.style }}" class="col-6 mt-1 rounded-3 ml-5 scratch_">
-                            {{ substack.text }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
             {% endfor %}
         </div>
     </div>

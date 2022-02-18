@@ -9,6 +9,9 @@ class PriorityListOfElements(object):
         self.priority_list = self.generate_priority_list()
         # self.print_priority_list()
 
+    def get_list_of_elements(self):
+        return self.list_of_elements
+
     def print_priority_list(self):
         for e in self.priority_list:
             print(e)
