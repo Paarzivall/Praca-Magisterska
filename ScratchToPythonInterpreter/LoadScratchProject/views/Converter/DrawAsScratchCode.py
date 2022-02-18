@@ -4,18 +4,16 @@ from LoadScratchProject.views.Converter.ScratchBlockGenerator import IdGenerator
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.Block import Block
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.OutputBlock import OutputBlock
 
-dict_of_left_elements = {'VARIABLE': [0, 1], 'CONDITION': [1], 'OPERAND1': [1, 1], 'DEGREES': [1, 1]}
-dict_of_right_elements = {'OPERAND2': [1, 1], 'VALUE': [1, 1]}
+dict_of_left_elements = {'VARIABLE': [0, 1], 'CONDITION': [1], 'OPERAND1': [1, 1], 'DEGREES': [1, 1], 'OPERAND': [1], 'NUM1': [1, 1]}
+dict_of_right_elements = {'OPERAND2': [1, 1], 'VALUE': [1, 1], 'NUM2': [1, 1]}
 dict_of_child_elements = {'SUBSTACK': [1]}
 
 
 class DrawAsScratchCode(object):
     def __init__(self, list_of_elements):
         self.list_of_elements = list_of_elements
-        print(list_of_elements)
         self.list_of_ids = self.generate_list_of_ids()
         self.list_of_child_elements = list()
-        # print(len(self.list_of_ids), self.list_of_ids)
         self.actual_element, self.list_of_blocks = self.generate_list_of_blocks()
         self.output_code = self.generate_output_code()
         self.scratch_code = self.generate_scratch_code()
@@ -76,7 +74,6 @@ class DrawAsScratchCode(object):
     def generate_list_of_blocks(self):
         list_of_blocks = list()
         actual_element = None
-
         for e in self.list_of_elements:
             block_id = e['id']
             opcode = e['val']['opcode']
@@ -109,8 +106,14 @@ class DrawAsScratchCode(object):
             return value
         else:
             if isinstance(self.check_element_inside_other_element(value), Block):
-                value.left_value = self.get_value_of_block(self.check_element_inside_other_element(value.left_value))
-                value.right_value = self.get_value_of_block(self.check_element_inside_other_element(value.right_value))
+                try:
+                    value.left_value = self.get_value_of_block(self.check_element_inside_other_element(value.left_value))
+                    value.right_value = self.get_value_of_block(self.check_element_inside_other_element(value.right_value))
+                except:
+                    pass
+                if value.opcode == 'operator_not':
+                    return str(val_of_blocks[value.opcode]['text']) + str(value.left_value) + str(
+                        val_of_blocks[value.opcode]['text2'])
             return str(value.left_value) + str(val_of_blocks[value.opcode]['text'] + str(value.right_value))
 
     def get_left_and_right_value(self):
