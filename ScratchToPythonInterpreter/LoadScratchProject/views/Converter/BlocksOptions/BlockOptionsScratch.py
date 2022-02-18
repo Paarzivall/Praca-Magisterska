@@ -52,11 +52,16 @@ val_of_blocks = {
         'operator_mod': {
             'color': '#59c059',
             'text': 'reszta z dzielenia ',
-            'text2': '',
+            'text2': ' przez ',
         },
         'operator_round': {
             'color': '#59c059',
             'text': 'zaokrąglij ',
+            'text2': '',
+        },
+        'operator_length': {
+            'color': '#59c059',
+            'text': 'długość ',
             'text2': '',
         },
 

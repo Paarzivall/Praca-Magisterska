@@ -5,13 +5,14 @@ from LoadScratchProject.views.Converter.ScratchBlockGenerator.Block import Block
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.OutputBlock import OutputBlock
 
 dict_of_left_elements = {'VARIABLE': [0, 1], 'CONDITION': [1], 'OPERAND1': [1, 1], 'DEGREES': [1, 1], 'OPERAND': [1], 'NUM1': [1, 1]}
-dict_of_right_elements = {'OPERAND2': [1, 1], 'VALUE': [1, 1], 'NUM2': [1, 1]}
+dict_of_right_elements = {'OPERAND2': [1, 1], 'VALUE': [1, 1], 'NUM2': [1, 1], 'NUM': [1, 1], 'STRING': [1, 1]}
 dict_of_child_elements = {'SUBSTACK': [1]}
 
 
 class DrawAsScratchCode(object):
     def __init__(self, list_of_elements):
         self.list_of_elements = list_of_elements
+        # print(list_of_elements)
         self.list_of_ids = self.generate_list_of_ids()
         self.list_of_child_elements = list()
         self.actual_element, self.list_of_blocks = self.generate_list_of_blocks()
@@ -82,8 +83,8 @@ class DrawAsScratchCode(object):
             child = self.get_child_value(e)
             left_value = self.get_left_value(e)
             right_value = self.get_right_value(e)
-            # if opcode == 'operator_and':
-            # print(block_id, opcode, next_element, previous_element, child, left_value, right_value)
+            if opcode == 'operator_mod':
+                print(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             block = Block(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             if previous_element is None:
                 actual_element = block
@@ -111,10 +112,13 @@ class DrawAsScratchCode(object):
                     value.right_value = self.get_value_of_block(self.check_element_inside_other_element(value.right_value))
                 except:
                     pass
-                if value.opcode == 'operator_not':
-                    return str(val_of_blocks[value.opcode]['text']) + str(value.left_value) + str(
-                        val_of_blocks[value.opcode]['text2'])
-            return str(value.left_value) + str(val_of_blocks[value.opcode]['text'] + str(value.right_value))
+                if value.opcode == 'operator_not' or value.opcode == 'operator_mod':
+                    if value.opcode == 'operator_mod':
+                        return str(val_of_blocks[value.opcode]['text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + str(value.right_value) + ')'
+                    return str(val_of_blocks[value.opcode]['text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + ')'
+                elif value.opcode == 'operator_round' or value.opcode == 'operator_length':
+                    return '(' + str(val_of_blocks[value.opcode]['text']) + str(value.right_value) + ')'
+            return str(value.left_value) + str(val_of_blocks[value.opcode]['text']) + str(value.right_value)
 
     def get_left_and_right_value(self):
         left_value = None
@@ -141,6 +145,7 @@ class DrawAsScratchCode(object):
 
     def generate_output_block_object(self):
         left_value, right_value = self.get_left_and_right_value()
+        # print(self.actual_element.opcode, left_value, right_value)
         text_to_output = self.generate_text_to_block(left_value, right_value, val_of_blocks[self.actual_element.opcode], self.actual_element.block_id)
         block = OutputBlock(self.actual_element.block_id, self.actual_element.opcode, text_to_output)
         return block
@@ -151,7 +156,7 @@ class DrawAsScratchCode(object):
             try:
                 block = self.generate_output_block_object()
                 output_code.append(block)
-                # print(block)
+                print(block)
                 if self.actual_element.child is not None:
                     self.list_of_child_elements.append(self.actual_element.child)
                     self.actual_element = self.check_element_inside_other_element(self.actual_element.child)

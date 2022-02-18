@@ -6,7 +6,7 @@ class PriorityListOfElements(object):
         self.json_file = json_file
         self.list_of_elements = list()  # lista ze wszystkimi elementami "bloczkami"
         self.generate_list_of_elements()
-        self.priority_list = self.generate_priority_list()
+        # self.priority_list = self.generate_priority_list()
         # self.print_priority_list()
 
     def get_list_of_elements(self):
