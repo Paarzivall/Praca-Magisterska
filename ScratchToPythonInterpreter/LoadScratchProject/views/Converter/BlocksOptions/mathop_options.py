@@ -1,0 +1,16 @@
+mathop_options = {
+    'abs': 'wartość bezwzględna z ',
+    'floor': 'podłoga z ',
+    'ceiling': 'sufit z ',
+    'sqrt': 'pierwiastek kwadratowy z',
+    'sin': 'sinus z ',
+    'cos': 'cosinus z ',
+    'tan': 'tangens z ',
+    'asin': 'arcus sinus z ',
+    'acos': 'arcus cosinus z ',
+    'atan': 'arcus tangens z ',
+    'ln': 'logarytm naturalny z ',
+    'log': 'log z ',
+    'e ^': 'e^ z ',
+    '10 ^': '10^ z ',
+}
