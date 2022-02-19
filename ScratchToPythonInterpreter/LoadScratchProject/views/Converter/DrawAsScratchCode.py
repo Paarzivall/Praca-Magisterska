@@ -15,7 +15,7 @@ dict_of_child_elements = {'SUBSTACK': [1], 'SUBSTACK2': [1]}
 class DrawAsScratchCode(object):
     def __init__(self, list_of_elements):
         self.list_of_elements = list_of_elements
-        print(list_of_elements)
+        # print(list_of_elements)
         self.list_of_ids = self.generate_list_of_ids()
         self.list_of_child_elements = list()
         self.actual_element, self.list_of_blocks = self.generate_list_of_blocks()
@@ -86,8 +86,8 @@ class DrawAsScratchCode(object):
             child = self.get_child_value(e)
             left_value = self.get_left_value(e)
             right_value = self.get_right_value(e)
-            if opcode == 'operator_mod':
-                print(block_id, opcode, next_element, previous_element, child, left_value, right_value)
+            # if opcode == 'control_if_else':
+            #    print(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             block = Block(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             if previous_element is None:
                 actual_element = block
@@ -161,20 +161,43 @@ class DrawAsScratchCode(object):
         block = OutputBlock(self.actual_element.block_id, self.actual_element.opcode, text_to_output)
         return block
 
+    def del_element(self):
+        try:
+            self.list_of_ids.remove(self.actual_element.block_id)
+        except ValueError:
+            pass
+
+    def add_child_elements(self, output_code):
+        self.list_of_child_elements.append(self.actual_element.child)
+        self.actual_element = self.check_element_inside_other_element(self.actual_element.child)
+        block = self.generate_output_block_object()
+        output_code.append(block)
+        while self.actual_element.next_element is not None:
+            self.find_other_child_blocks()
+            block = self.generate_output_block_object()
+            output_code.append(block)
+        return output_code
+
+    def find_other_child_blocks(self):
+        self.actual_element = self.find_new_actual_element(self.actual_element.get_next_element())
+        self.list_of_child_elements.append(self.actual_element.block_id)
+        self.actual_element = self.check_element_inside_other_element(self.actual_element.block_id)
+
     def generate_output_code(self):
         output_code = list()
         while len(self.list_of_ids) > 0:
             try:
+                self.del_element()
                 block = self.generate_output_block_object()
                 output_code.append(block)
-                print(block)
+                act_elem = self.actual_element
                 if self.actual_element.child is not None:
-                    self.list_of_child_elements.append(self.actual_element.child)
-                    self.actual_element = self.check_element_inside_other_element(self.actual_element.child)
+                    output_code = self.add_child_elements(output_code)
                 else:
                     self.actual_element = self.find_new_actual_element(self.actual_element.get_next_element())
                     if self.actual_element.previous_element in self.list_of_child_elements:
                         self.list_of_child_elements.append(self.actual_element.block_id)
+                self.actual_element = self.find_new_actual_element(act_elem.get_next_element())
             except AttributeError:
                 break
         return output_code
