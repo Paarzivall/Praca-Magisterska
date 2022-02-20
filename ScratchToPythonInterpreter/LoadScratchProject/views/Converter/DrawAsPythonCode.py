@@ -203,7 +203,7 @@ class DrawAsPythonCode(object):
                 output_code.append(block)
             if num == 0:
                 output_code.append(
-                    OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['python_text1']))
+                    OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['python_text3']))
         return output_code
 
     def find_other_child_blocks(self):
@@ -257,7 +257,8 @@ class DrawAsPythonCode(object):
                 for num, e in enumerate(self.dict_of_functions[block]['text']):
                     if num != 0 :
                         c = 'ml-5'
-                    python_code.append({'id': self.dict_of_functions[block]['id'], 'opcode': block, 'text': e, 'class': c})
+                    id = IdGenerator.IdGenerator(self.dict_of_functions[block]['id']).get_id()
+                    python_code.append({'id': id, 'opcode': block, 'text': e, 'class': c})
 
         for block in self.output_code:
             opcode = block.opcode

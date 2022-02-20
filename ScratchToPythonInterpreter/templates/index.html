@@ -27,14 +27,14 @@
     <div class="row">
         <div class="col-6" id="python_code">
             {% for element in python_code_result %}
-                <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }}">
+                <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }} block_of_python_code">
                     {{ element.text }}
                 </span><br>
             {% endfor %}
         </div>
         <div class="col-6 text-center" id="scratch_code">
             {% for element in scratch_code_result %}
-                <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.background }}" class="col-6 mt-1 rounded-3 scratch_{{ element.id }} {{ element.class }}">
+                <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.background }}" class="col-6 mt-1 rounded-3 scratch_{{ element.id }} {{ element.class }} block_of_scratch_code">
                     {{ element.text }}
                 </div>
             {% endfor %}

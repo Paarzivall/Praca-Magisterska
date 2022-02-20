@@ -220,7 +220,8 @@ val_of_blocks = {
             'scratch_text3': 'w przeciwnym razie',
             'python_function': [],
             'python_text1': 'if ',
-            'python_text2': 'else',
+            'python_text2': ':',
+            'python_text3': 'else:',
         },
         'control_wait_until': {
             'color': '#ffab19',
