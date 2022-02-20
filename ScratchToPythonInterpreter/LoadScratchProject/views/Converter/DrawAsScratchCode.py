@@ -1,7 +1,6 @@
 from LoadScratchProject.views.Converter.BlocksOptions.BlockOptions import val_of_blocks
 from LoadScratchProject.views.Converter.BlocksOptions.ElementPositions import dict_of_left_elements, dict_of_right_elements, dict_of_child_elements
 from LoadScratchProject.views.Converter.BlocksOptions.mathop_options import mathop_options
-import LoadScratchProject.views.Converter.BlocksOptions.TypeOfBlocks as TypeOfBlocks
 from LoadScratchProject.views.Converter.ScratchBlockGenerator import IdGenerator
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.Block import Block
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.OutputBlock import OutputBlock
@@ -130,7 +129,7 @@ class DrawAsScratchCode(object):
                 elif value.opcode in ['operator_round', 'operator_length']:
                     return '(' + str(val_of_blocks[value.opcode]['scratch_text']) + str(value.right_value) + ')'
                 elif value.opcode in ['operator_mathop']:
-                    return mathop_options[value.left_value] + '(' + str(value.right_value) + ')'
+                    return mathop_options['scratch_' + value.left_value] + '(' + str(value.right_value) + ')'
             return str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text']) + str(value.right_value)
 
     def get_left_and_right_value(self):
@@ -194,7 +193,7 @@ class DrawAsScratchCode(object):
                 block = self.generate_output_block_object()
                 output_code.append(block)
             if num == 0:
-                output_code.append(OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['text3']))
+                output_code.append(OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['scratch_text3']))
         return output_code
 
     def find_other_child_blocks(self):

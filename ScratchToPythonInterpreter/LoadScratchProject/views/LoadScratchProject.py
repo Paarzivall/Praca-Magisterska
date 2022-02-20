@@ -16,9 +16,9 @@ class LoadScratchProject(View):
                 file = Files(request.FILES.get('project'))
                 priority_list = PriorityListOfElements(file.get_json_file())
                 scratch_code = DrawAsScratchCode(priority_list.get_list_of_elements()).get_scratch_code()
-                # python_code = DrawAsPythonCode(priority_list.get_priority_list()).get_python_code()
+                python_code = DrawAsPythonCode(priority_list.get_list_of_elements()).get_python_code()
                 # results = file.get_json_file()
-        return render(request, "index.html", {'form': ProjectForm(), 'python_code_result': 'python_code',
+        return render(request, "index.html", {'form': ProjectForm(), 'python_code_result': python_code,
                                               'scratch_code_result': scratch_code})
     """def post(self, request, *args, **kwargs):
         if request.method == 'POST':

@@ -27,7 +27,9 @@
     <div class="row">
         <div class="col-6" id="python_code">
             {% for element in python_code_result %}
-                <span id="python_{{ element.id }}" class="{{ element.class }} python_{{ element.id }}">{{ element.code }}</span><br>
+                <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }}">
+                    {{ element.text }}
+                </span><br>
             {% endfor %}
         </div>
         <div class="col-6 text-center" id="scratch_code">
