@@ -65,15 +65,26 @@ class DrawAsScratchCode(object):
         return None
 
     def get_child_value(self, e):
-        if self.check_if_dict_exists(e['val'], 'inputs'):
-            for l_e in dict_of_child_elements:
-                if self.check_if_dict_exists(e['val']['inputs'], l_e):
-                    return self.get_dict_field(dict_of_child_elements, e['val']['inputs'], l_e)
-        if self.check_if_dict_exists(e['val'], 'fields'):
-            for l_e in dict_of_child_elements:
-                if self.check_if_dict_exists(e['val']['fields'], l_e):
-                    return self.get_dict_field(dict_of_child_elements, e['val']['fields'], l_e)
-        return None
+        list_of_child = list()
+        for x in dict_of_child_elements:
+            if self.check_if_dict_exists(e['val'], 'inputs'):
+                for l_e in dict_of_child_elements:
+                    if self.check_if_dict_exists(e['val']['inputs'], l_e):
+                        child = self.get_dict_field(dict_of_child_elements, e['val']['inputs'], l_e)
+                        if child not in list_of_child:
+                            list_of_child.append(child)
+            if self.check_if_dict_exists(e['val'], 'fields'):
+                for l_e in dict_of_child_elements:
+                    if self.check_if_dict_exists(e['val']['fields'], l_e):
+                        child = self.get_dict_field(dict_of_child_elements, e['val']['fields'], l_e)
+                        if child not in list_of_child:
+                            list_of_child.append(child)
+        if len(list_of_child) == 0:
+            return None
+        elif len(list_of_child) == 1:
+            return list_of_child[0]
+        else:
+            return list_of_child
 
     def generate_list_of_blocks(self):
         list_of_blocks = list()
@@ -178,6 +189,19 @@ class DrawAsScratchCode(object):
             output_code.append(block)
         return output_code
 
+    def add_multiply_child_elements(self, output_code, act_elem):
+        for child in self.actual_element.child:
+            self.list_of_child_elements.append(child)
+            self.actual_element = self.check_element_inside_other_element(child)
+            block = self.generate_output_block_object()
+            output_code.append(block)
+            while self.actual_element.next_element is not None:
+                self.find_other_child_blocks()
+                block = self.generate_output_block_object()
+                output_code.append(block)
+            output_code.append(OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['text3']))
+        return output_code
+
     def find_other_child_blocks(self):
         self.actual_element = self.find_new_actual_element(self.actual_element.get_next_element())
         self.list_of_child_elements.append(self.actual_element.block_id)
@@ -192,7 +216,10 @@ class DrawAsScratchCode(object):
                 output_code.append(block)
                 act_elem = self.actual_element
                 if self.actual_element.child is not None:
-                    output_code = self.add_child_elements(output_code)
+                    if isinstance(self.actual_element.child, str):
+                        output_code = self.add_child_elements(output_code)
+                    else:
+                        output_code = self.add_multiply_child_elements(output_code, act_elem)
                 else:
                     self.actual_element = self.find_new_actual_element(self.actual_element.get_next_element())
                     if self.actual_element.previous_element in self.list_of_child_elements:
