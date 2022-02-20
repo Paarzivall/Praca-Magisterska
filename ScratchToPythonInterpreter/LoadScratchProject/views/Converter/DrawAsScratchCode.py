@@ -1,15 +1,10 @@
-from LoadScratchProject.views.Converter.BlocksOptions.BlockOptionsScratch import val_of_blocks
+from LoadScratchProject.views.Converter.BlocksOptions.BlockOptions import val_of_blocks
+from LoadScratchProject.views.Converter.BlocksOptions.ElementPositions import dict_of_left_elements, dict_of_right_elements, dict_of_child_elements
 from LoadScratchProject.views.Converter.BlocksOptions.mathop_options import mathop_options
 import LoadScratchProject.views.Converter.BlocksOptions.TypeOfBlocks as TypeOfBlocks
-from LoadScratchProject.views.Converter.ScratchBlockGenerator import IdGenerator, AdditionalOptionsGenerator
+from LoadScratchProject.views.Converter.ScratchBlockGenerator import IdGenerator
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.Block import Block
 from LoadScratchProject.views.Converter.ScratchBlockGenerator.OutputBlock import OutputBlock
-
-dict_of_left_elements = {'VARIABLE': [0, 1], 'CONDITION': [1], 'OPERAND1': [1, 1], 'DEGREES': [1, 1], 'OPERAND': [1],
-                         'NUM1': [1, 1], 'TIMES': [1, 1], 'KEY_OPTION': [0], 'OPERATOR': [0], 'FROM': [1, 1],
-                         'STRING1': [1, 1], 'LETTER': [1, 1], 'STEPS': [1, 1], 'MESSAGE': [1, 1], 'DURATION': [1, 1], 'STOP_OPTION': [1]}
-dict_of_right_elements = {'OPERAND2': [1, 1], 'VALUE': [1, 1], 'NUM2': [1, 1], 'NUM': [1, 1], 'STRING': [1, 1], 'TO': [1, 1], 'STRING2': [1, 1], 'SECS': [1, 1]}
-dict_of_child_elements = {'SUBSTACK': [1], 'SUBSTACK2': [1]}
 
 
 class DrawAsScratchCode(object):
@@ -97,8 +92,6 @@ class DrawAsScratchCode(object):
             child = self.get_child_value(e)
             left_value = self.get_left_value(e)
             right_value = self.get_right_value(e)
-            # if opcode == 'control_if_else':
-            #    print(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             block = Block(block_id, opcode, next_element, previous_element, child, left_value, right_value)
             if previous_element is None:
                 actual_element = block
@@ -128,17 +121,17 @@ class DrawAsScratchCode(object):
                     pass
                 if value.opcode in ['operator_not', 'operator_mod', 'operator_random', 'operator_join', 'operator_contains', 'operator_letter_of']:
                     if value.opcode in ['operator_mod']:
-                        return str(val_of_blocks[value.opcode]['text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + str(value.right_value) + ')'
+                        return str(val_of_blocks[value.opcode]['scratch_text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text2']) + str(value.right_value) + ')'
                     elif value.opcode in ['operator_random', 'operator_join', 'operator_letter_of']:
-                        return str(val_of_blocks[value.opcode]['text']) + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + str(value.right_value)
+                        return str(val_of_blocks[value.opcode]['scratch_text']) + str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text2']) + str(value.right_value)
                     elif value.opcode in ['operator_contains']:
-                        return str(val_of_blocks[value.opcode]['text']) + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + str(value.right_value) + str(val_of_blocks[value.opcode]['text3'])
-                    return str(val_of_blocks[value.opcode]['text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['text2']) + ')'
+                        return str(val_of_blocks[value.opcode]['scratch_text']) + str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text2']) + str(value.right_value) + str(val_of_blocks[value.opcode]['scratch_text3'])
+                    return str(val_of_blocks[value.opcode]['scratch_text']) + '(' + str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text2']) + ')'
                 elif value.opcode in ['operator_round', 'operator_length']:
-                    return '(' + str(val_of_blocks[value.opcode]['text']) + str(value.right_value) + ')'
+                    return '(' + str(val_of_blocks[value.opcode]['scratch_text']) + str(value.right_value) + ')'
                 elif value.opcode in ['operator_mathop']:
                     return mathop_options[value.left_value] + '(' + str(value.right_value) + ')'
-            return str(value.left_value) + str(val_of_blocks[value.opcode]['text']) + str(value.right_value)
+            return str(value.left_value) + str(val_of_blocks[value.opcode]['scratch_text']) + str(value.right_value)
 
     def get_left_and_right_value(self):
         left_value = None
@@ -157,17 +150,18 @@ class DrawAsScratchCode(object):
         else:
             additional_text = ''
         if opcode in ['looks_sayforsecs', 'looks_thinkforsecs']:
-            return additional_text + block_value['text'] + left_value + block_value['text2'] + right_value + block_value['text3']
+            return additional_text + block_value['scratch_text'] + left_value + block_value['scratch_text2'] + right_value + block_value['scratch_text3']
+        if opcode in ['control_stop']:
+            return additional_text + block_value['scratch_text']
         if right_value is None and left_value is not None:
-            return additional_text + block_value['text'] + left_value + block_value['text2']
+            return additional_text + block_value['scratch_text'] + left_value + block_value['scratch_text2']
         elif right_value is not None and left_value is not None:
-            return additional_text + block_value['text'] + left_value + block_value['text2'] + right_value
+            return additional_text + block_value['scratch_text'] + left_value + block_value['scratch_text2'] + right_value
         elif right_value is None and left_value is None:
-            return additional_text + block_value['text'] + block_value['text2']
+            return additional_text + block_value['scratch_text'] + block_value['scratch_text2']
 
     def generate_output_block_object(self):
         left_value, right_value = self.get_left_and_right_value()
-        # print(self.actual_element.opcode, left_value, right_value)
         text_to_output = self.generate_text_to_block(left_value, right_value, val_of_blocks[self.actual_element.opcode], self.actual_element.block_id, self.actual_element.opcode)
         block = OutputBlock(self.actual_element.block_id, self.actual_element.opcode, text_to_output)
         return block
@@ -190,7 +184,7 @@ class DrawAsScratchCode(object):
         return output_code
 
     def add_multiply_child_elements(self, output_code, act_elem):
-        for child in self.actual_element.child:
+        for num, child in enumerate(self.actual_element.child):
             self.list_of_child_elements.append(child)
             self.actual_element = self.check_element_inside_other_element(child)
             block = self.generate_output_block_object()
@@ -199,7 +193,8 @@ class DrawAsScratchCode(object):
                 self.find_other_child_blocks()
                 block = self.generate_output_block_object()
                 output_code.append(block)
-            output_code.append(OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['text3']))
+            if num == 0:
+                output_code.append(OutputBlock(act_elem.block_id, act_elem.opcode, val_of_blocks[act_elem.opcode]['text3']))
         return output_code
 
     def find_other_child_blocks(self):
