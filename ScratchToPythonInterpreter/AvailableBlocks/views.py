@@ -23,7 +23,7 @@ class AvailableBlocks(View):
                     # print('img/ScratchBlocks/' + dir + '/' + block)
                     list_of_files.append({'path': 'ScratchBlocks/' + dir + '/' + block, 'alt': block[:len(block) - 4]})
                 list_of_all_files.append({'type_of_blocks': dir, 'files': list_of_files})
-            #else:
-            #    dict_of_all_files[dir] = None
+            else:
+                list_of_all_files.append({'type_of_blocks': dir, 'files': None})
         return list_of_all_files
 
