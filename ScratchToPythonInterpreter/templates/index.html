@@ -6,24 +6,6 @@
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <div class="row justify-content-center mx-auto">
-        <div class="col-8">
-            <form action="/LoadScratchProject/" method="post" class="col-12 mx-auto input-group mt-1" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ form }}
-                <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-4"/>
-            </form>
-        </div>
-    </div>
-    <hr>
-    <div class="row">
-        <div class="col-12 mx-auto text-center">
-            <a class="col-3 btn btn-outline-primary" href="#animation">Pokaż działanie kodu</a>
-            <a class="col-3 btn btn-outline-primary" href="#animation">Pokaż dostępne bloczki</a>
-            <button class="col-3 btn btn-outline-primary">Pobierz pliki źródłowe</button>
-        </div>
-    </div>
-    <hr>
     <div class="row">
         <div class="col-6" id="python_code">
             {% for element in python_code_result %}

@@ -125,17 +125,21 @@ class DrawAsPythonCode(object):
                     if value.opcode in ['operator_mod']:
                         return str(val_of_blocks[value.opcode]['python_text1']) + '(' + str(value.left_value) + str(
                             val_of_blocks[value.opcode]['python_text2']) + str(value.right_value) + ')'
-                    elif value.opcode in ['operator_random', 'operator_join', 'operator_letter_of']:
-                        return str(val_of_blocks[value.opcode]['python_text1']) + str(value.left_value) + str(
-                            val_of_blocks[value.opcode]['python_text2']) + str(value.right_value)
-                    elif value.opcode in ['operator_contains']:
+                    elif value.opcode in ['operator_random', 'operator_join']:
                         return str(val_of_blocks[value.opcode]['python_text1']) + str(value.left_value) + str(
                             val_of_blocks[value.opcode]['python_text2']) + str(value.right_value) + str(
                             val_of_blocks[value.opcode]['python_text3'])
+                    elif value.opcode in ['operator_letter_of']:
+                        return str(value.right_value) + str(
+                            val_of_blocks[value.opcode]['python_text1']) + str(value.left_value) + str(
+                            val_of_blocks[value.opcode]['python_text2'])
+                    elif value.opcode in ['operator_contains']:
+                        return str(val_of_blocks[value.opcode]['python_text1']) + str(value.right_value) + str(
+                            val_of_blocks[value.opcode]['python_text2']) + str(value.left_value)
                     return str(val_of_blocks[value.opcode]['python_text1']) + '(' + str(value.left_value) + str(
                         val_of_blocks[value.opcode]['python_text2']) + ')'
                 elif value.opcode in ['operator_round', 'operator_length']:
-                    return '(' + str(val_of_blocks[value.opcode]['python_text1']) + str(value.right_value) + ')'
+                    return str(val_of_blocks[value.opcode]['python_text1']) + str(value.right_value) + str(val_of_blocks[value.opcode]['python_text2'])
                 elif value.opcode in ['operator_mathop']:
                     return mathop_options['python_' + value.left_value] + '(' + str(value.right_value) + ')'
             return str(value.left_value) + str(val_of_blocks[value.opcode]['python_text1']) + str(value.right_value)
@@ -160,6 +164,9 @@ class DrawAsPythonCode(object):
             return additional_text + block_value['python_text1'] + left_value + block_value['python_text2'] + right_value
         if opcode in ['control_stop']:
             return additional_text + block_value['python_text1']
+        if opcode in ['control_repeat']:
+            print(opcode, left_value, right_value)
+            return block_value['python_text1'] + block_value['python_text2'] + left_value + block_value['python_text3']
         if right_value is None and left_value is not None:
             return additional_text + block_value['python_text1'] + left_value + block_value['python_text2']
         elif right_value is not None and left_value is not None:
