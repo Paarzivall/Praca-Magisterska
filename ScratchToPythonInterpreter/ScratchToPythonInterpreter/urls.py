@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("LoadScratchProject.urls")),
     path('', include("AvailableBlocks.urls")),
+    path('', include("Polls.urls")),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT[0])
