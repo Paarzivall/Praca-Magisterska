@@ -1,0 +1,14 @@
+{% for question in questions %}
+                        <div class="form-group" id="{{ question.question_id }}">
+                            <label>{{ question.question_text }}</label>
+                            {% for answer in question.answers %}
+                            <div class="form-check">
+                                <input class="checkbox" type="radio" name="{{ answer.answer_id }}" id="{{ answer.answer_id }}" value="{{ answer.answer_id }}">
+                                <label class="form-check-label" for="{{ answer.answer_id }}">
+                                    {{ answer.answer_text }}
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    <hr>
+                    {% endfor %}

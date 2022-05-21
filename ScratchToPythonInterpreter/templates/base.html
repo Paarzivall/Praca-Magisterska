@@ -15,21 +15,24 @@
         <header>
         </header>
         <main>
-            <div class="row justify-content-center mx-auto">
-                <div class="col-8">
-                    <form action="/LoadScratchProject/" method="post" class="col-12 mx-auto input-group mt-1" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ form }}
-                        <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-4"/>
-                    </form>
+            {% if python_code_result is not None %}
+                <div class="row justify-content-center mx-auto">
+                    <div class="col-8">
+                        <form action="/LoadScratchProject/" method="post" class="col-7 mx-auto input-group mt-1 rounded" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form }}
+                            <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-4 ml-2 rounded"/>
+                        </form>
+                    </div>
                 </div>
-            </div>
-            <hr>
+                <hr>
+            {% endif %}
             <div class="row">
-                <div class="col-12 mx-auto text-center">
-                    <a class="col-3 btn btn-outline-primary" href="/polls">Ankieta</a>
-                    <a class="col-3 btn btn-outline-primary" href="/AvailableBlocks">Pokaż dostępne bloczki</a>
-                    <button class="col-3 btn btn-outline-primary">Pobierz pliki źródłowe</button>
+                <div class="col-12 text-center d-flex flex-column justify-content-center">
+                    <a class="col-3 btn btn-outline-primary mx-auto mt-1" href="/home">Strona Główna</a>
+                    <a class="col-3 btn btn-outline-primary mx-auto mt-1" href="/polls">Ankieta</a>
+                    <a class="col-3 btn btn-outline-primary mx-auto mt-1" href="/AvailableBlocks">Pokaż dostępne bloczki</a>
+                    <a class="col-3 btn btn-outline-primary mx-auto mt-1 mb-2" href="/Exercises">Ćwiczenia</a>
                 </div>
             </div>
             <hr>

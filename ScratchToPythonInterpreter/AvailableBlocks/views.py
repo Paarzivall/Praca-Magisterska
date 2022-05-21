@@ -10,7 +10,7 @@ class AvailableBlocks(View):
         path_to_images = os.getcwd() + '\AvailableBlocks\ScratchBlocks\\'
         dirs_in_path = os.listdir(path_to_images)
         blocks = self.get_images(path_to_images, dirs_in_path)
-        # print(type(blocks))
+        # print(blocks)
         return render(request, 'AvailableBlocks/AvailableBlocksMain.html', {'form': ProjectForm(), 'blocks': blocks})
 
     def get_images(self, path_to_images, dirs):

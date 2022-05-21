@@ -7,6 +7,7 @@
 {% block content %}
 <div class="container-fluid">
     <div class="row">
+        {% if python_code_result is not None %}
         <div class="col-6" id="python_code">
             {% for element in python_code_result %}
                 <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }} block_of_python_code">
@@ -21,11 +22,20 @@
                 </div>
             {% endfor %}
         </div>
+        {% else %}
+             <div class="row justify-content-center mx-auto mt-5">
+                    <div class="col-8">
+                        <form action="/LoadScratchProject/" method="post" class="col-7 mx-auto input-group mt-1 rounded" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form }}
+                            <input type="submit" value="Załaduj Projekt Scratcha" class="btn btn-outline-primary col-4 ml-2 rounded"/>
+                        </form>
+                    </div>
+                </div>
+        {% endif %}
     </div>
-    <hr>
     <div class="row justify-content-center mx-auto mt-5" id="animation">
         <div class="col-8 mx-auto text-center">
-            <button class="col-4 btn btn-outline-primary" id="start_animation">Uruchom animację</button>
 
 
         </div>

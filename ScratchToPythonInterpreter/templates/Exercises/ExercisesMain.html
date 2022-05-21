@@ -1,0 +1,52 @@
+{% extends '../base.html' %}
+{% load static %}
+{% block sub_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <div class="row justify-content-center mx-auto">
+            <div class="accordion" id="accordionExample">
+                {% for exercise in exercises %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingOne{{ exercise.lesson_id }}">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{ exercise.lesson_id }}" aria-expanded="true" aria-controls="collapseOne{{ exercise.lesson_id }}">
+                                Lekcja {{ exercise.lesson_id }}
+                            </button>
+                        </h2>
+                        <div id="collapseOne{{ exercise.lesson_id }}" class="accordion-collapse collapse {% if exercise.lesson_id == '1' %} show {% endif %}" aria-labelledby="headingOne{{ exercise.lesson_id }}" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+                                {% for e in exercise.exercises %}
+                                    <div class="exercise col-12 pt-3">
+                                        <span >{{ e.question_text }}</span>
+                                        <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal{{ e.question_id }}">
+                                            Pokaż rozwiązanie
+                                        </button>
+                                        <div class="modal fade" id="exampleModal{{ e.question_id }}" tabindex="-1" aria-labelledby="exampleModalLabel{{ e.question_id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel{{ e.question_id }}">{{ e.question_text }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <br>
+                                                        <img src="{{ MEDIA_URL }}{{ e.path_to_answer }}" alt="{{ e.question_text }}">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

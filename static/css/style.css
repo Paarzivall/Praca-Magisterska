@@ -1,0 +1,11 @@
+.block_of_scratch_code {
+    border-radius: 25px;
+}
+
+.block_of_scratch_code:hover {
+    font-weight: bold;
+}
+
+.child {
+    border-radius: 15px;
+}
