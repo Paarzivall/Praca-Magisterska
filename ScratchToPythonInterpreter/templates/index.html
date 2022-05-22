@@ -6,21 +6,25 @@
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
-    <div class="row">
+    <div class="row mx-auto">
         {% if python_code_result is not None %}
-        <div class="col-6" id="python_code">
-            {% for element in python_code_result %}
-                <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }} block_of_python_code">
-                    {{ element.text }}
-                </span><br>
-            {% endfor %}
+        <div class="col-6 ml-5 border border-secondary border-top-0 border-bottom-0 border-start-0 " id="python_code">
+            <div class="col-6 mx-auto ml-2">
+                {% for element in python_code_result %}
+                    <span id="python_{{ element.id }}" class="col-6 mt-1 rounded-3 python_{{ element.id }} {{ element.class }} block_of_python_code fs-5 text-dark">
+                            {{ element.text }}
+                    </span><br>
+                {% endfor %}
+            </div>
         </div>
-        <div class="col-6 text-center" id="scratch_code">
-            {% for element in scratch_code_result %}
-                <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.background }}" class="col-6 mt-1 rounded-3 scratch_{{ element.id }} {{ element.class }} block_of_scratch_code">
-                    {{ element.text }}
-                </div>
-            {% endfor %}
+        <div class="col-4 ml-5 text-center " id="scratch_code">
+            <div class="col-4 mx-auto">
+                {% for element in scratch_code_result %}
+                    <div id="scratch_{{ element.id }}" style="height:100px; background-color:{{ element.background }}" class="col-8 d-flex align-items-center justify-content-center mt-1 fs-5  rounded-3 scratch_{{ element.id }} {{ element.class }} block_of_scratch_code">
+                        {{ element.text }}
+                    </div>
+                {% endfor %}
+            </div>
         </div>
         {% else %}
              <div class="row justify-content-center mx-auto mt-5">

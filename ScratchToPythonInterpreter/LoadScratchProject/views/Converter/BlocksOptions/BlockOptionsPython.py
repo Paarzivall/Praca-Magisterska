@@ -62,7 +62,7 @@ val_of_blocks = {
 
         'event_whenflagclicked': {
             'code': 'if is_clicked():',
-            'additional_code': ['def if_clicked():', '[Ciało funkcji - w tym wypadku powinno zwrócić "True" albo "False"]'],
+            'additional_code': ['def if_clicked():', '#[Ciało funkcji - w tym wypadku powinno zwrócić "True" albo "False"]'],
             'style': '',
         },
         'data_setvariableto': {
@@ -103,7 +103,7 @@ val_of_blocks = {
 
         'motion_turnright': {
             'code': 'turn_right(',
-            'additional_code': ['def turn_right(degree):', '[Ciało funkcji służącej do obracania stworka]'],
+            'additional_code': ['def turn_right(degree):', '#[Ciało funkcji służącej do obracania stworka]'],
             'style': '',
         },
         'data_changevariableby': {
