@@ -32,22 +32,32 @@
 ]}, {"lesson_id": "2", "exercises": [
   {
     "question_id": "21",
-    "question_text": "question#21",
-    "path_to_answer": "Exercises/Exercise#1/zad1.png"
+    "question_text": "1. Stwórz program, który po (kliknięciu zielonej flagi) spowoduje wypisanie słowa “Cześć”",
+    "path_to_answer": "Exercise1/zad1.png"
   },
   {
     "question_id": "22",
-    "question_text": "question#22",
-    "path_to_answer": "Exercises/Exercise#1/zad1.png"
+    "question_text": "2. Stwórz program, który po (kliknięciu zielonej flagi) przypisze do zmiennej “x” wartość 100 oraz ją wypisze",
+    "path_to_answer": "Exercise1/zad2.png"
   },
   {
     "question_id": "23",
-    "question_text": "question#23",
-    "path_to_answer": "Exercises/Exercise#1/zad1.png"
+    "question_text": "3. Stwórz program, który po (kliknięciu zielonej flagi) przypisze do zmiennej “x” wartość 10 i będzie wypisywał komunikat “Cześć” dopóki x < 50",
+    "path_to_answer": "Exercise1/zad3.png"
   },
   {
     "question_id": "24",
-    "question_text": "question#24",
-    "path_to_answer": "Exercises/Exercise#1/zad1.png"
+    "question_text": "4. Stwórz program, który będzie sprawdzał czy zmienna “x” o zadanej wartości jest większa lub mniejsza od 50. Sprawdź dla kilku wartości",
+    "path_to_answer": "Exercise1/zad4.png"
+  },
+    {
+    "question_id": "25",
+    "question_text": "5. Rozbuduj program z poprzedniego zadania dodając opcje sprawdzania czy zmienna “x” jest równa wartości 50. Sprawdź dla kilku przypadków",
+    "path_to_answer": "Exercise1/zad5.png"
+  },
+    {
+    "question_id": "26",
+    "question_text": "6. Stwórz program który będzie ciągle zwiększał zmienną x o 1(pętla nieskończona)",
+    "path_to_answer": "Exercise1/zad6.png"
   }
 ]}]

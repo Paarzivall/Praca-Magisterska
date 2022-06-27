@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect
 from django.views.generic import View
-from scratchclient import ScratchSession, Project
 from LoadScratchProject.forms import ProjectForm
 from LoadScratchProject.views.Converter.DrawAsScratchCode import DrawAsScratchCode
 from LoadScratchProject.views.Converter.DrawAsPythonCode import DrawAsPythonCode

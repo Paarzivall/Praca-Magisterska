@@ -77,19 +77,19 @@ WSGI_APPLICATION = 'ScratchToPythonInterpreter.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'praca_magisterska',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': 'SET sql_mode=STRICT_TRANS_TABLES'
-        }
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.mysql',
+#        'NAME': 'praca_magisterska',
+#        'USER': 'root',
+#        'PASSWORD': '',
+#        'HOST': '127.0.0.1',
+#        'PORT': '3306',
+#        'OPTIONS': {
+#            'init_command': 'SET sql_mode=STRICT_TRANS_TABLES'
+#        }
+#    }
+#}
 MEDIA_ROOT = os.path.join(BASE_DIR, "media\\"),
 MEDIA_URL = "/media/"
 ADMIN_TOOLS_MEDIA_URL = os.path.join(BASE_DIR, 'media\\admin_tools\\')
